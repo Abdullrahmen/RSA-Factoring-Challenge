@@ -1,16 +1,19 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 
 int main(int argc, char *argv[])
 {
 	FILE *stream;
 	char *line = NULL;
-	int not_exit = 1;
 	size_t len = 0;
-	long long div = 0, rest = 0, number = 0;
-	ssize_t nread = 0;
+	long long flag = 1, div, rest, number, counter;
+	ssize_t nread;
 
 	if (argc != 2) {
 		fprintf(stderr, "Usage: %s <file>\n", argv[0]);
@@ -24,13 +27,14 @@ int main(int argc, char *argv[])
 	}
 
 	while ((nread = getline(&line, &len, stream)) != -1) {
-		not_exit = 1, div = 2;
+		flag = 1, div = 2;
 		number = atoll(line);
-		while (not_exit) {
+		while (flag) {
 			rest = number % div;
 			if (!rest) {
-				printf("%lld=%lld*%lld\n", number, number / div, div);
-				not_exit = 0;
+				counter = number / div;
+				printf("%lld=%lld*%lld\n", number, counter, div);
+				flag = 0;
 			}
 			div++;
 		}
